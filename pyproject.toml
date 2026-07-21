@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "manual-job-profile-skill"
+version = "0.1.0"
+description = "Hermes manual job profile skill and CLI"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "Hermes Agent"}]
+
+[project.scripts]
+manual-job-profile = "hermes.skills.manual_job_profile:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
