@@ -3,13 +3,13 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "manual-job-profile-skill"
+name = "automated-job-application-tracker-skill"
 version = "0.1.0"
-description = "Hermes manual job profile skill and CLI"
+description = "Codex skill and CLI for organizing and recording job applications"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
-authors = [{name = "Hermes Agent"}]
+authors = [{name = "DengZhiyuan-math"}]
 
 [project.scripts]
 manual-job-profile = "hermes.skills.manual_job_profile:main"

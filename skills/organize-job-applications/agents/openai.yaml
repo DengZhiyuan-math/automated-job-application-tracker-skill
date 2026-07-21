@@ -1,0 +1,4 @@
+interface:
+  display_name: "Job Application Organizer"
+  short_description: "Automatically organize and record job applications"
+  default_prompt: "Use $organize-job-applications to organize this job description and record it in my application tracker."
