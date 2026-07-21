@@ -1,34 +1,34 @@
 # Automated Job Application Tracker Skill
 
-面向 Codex 的通用求职申请整理 skill：把手动提供的职位描述（JD）、招聘方备注或申请摘要，自动整理为结构统一、可持续更新的 Obsidian 求职记录。
+A general-purpose Codex skill that automatically organizes manually supplied job descriptions, recruiter notes, and application summaries into consistent, updateable Obsidian records.
 
-本仓库同时包含：
+This repository contains:
 
-- Codex skill 定义与使用参考；
-- 一个仅依赖 Python 标准库的命令行工具；
-- Obsidian Markdown 与 Bases 数据库生成逻辑；
-- 覆盖职位分类、Markdown 渲染、文件命名和写入流程的测试。
+- A Codex skill definition and reference guide
+- A command-line interface implemented with the Python standard library
+- Obsidian Markdown and Bases generation logic
+- Tests for track inference, Markdown rendering, file naming, and vault writes
 
-> 本仓库只包含公开的 skill、实现和测试，不包含个人邮箱内容、求职追踪数据或用户私有 Vault 导出。
+> This public repository contains only the skill, implementation, and tests. It does not include personal inbox content, application-tracker data, or private vault exports.
 
-## 功能
+## Features
 
-- 从文本文件或标准输入读取 JD / profile；
-- 接收公司、职位、状态、来源、地点、截止日期、联系人等字段；
-- 根据文本关键词推断 `AI/ML`、`Quant`、`Research`、`Data Science`、`Education` 或 `Other` track；
-- 生成带 YAML Properties 的 Obsidian Markdown 笔记；
-- 写入指定 Obsidian Vault，并可同步生成 `Job Applications.base`；
-- 保留原始职位文本，方便后续匹配邮件回复和更新已有记录；
-- 支持 Codex 自动调用，也可以直接使用 CLI。
+- Read a job description or profile from a text file or standard input
+- Record company, role, status, source, location, deadline, contact, and application date
+- Infer an `AI/ML`, `Quant`, `Research`, `Data Science`, `Education`, or `Other` track from the source text
+- Generate Obsidian Markdown with YAML Properties
+- Write directly to an Obsidian vault and optionally refresh `Job Applications.base`
+- Preserve the original job description for later email matching and record updates
+- Run automatically through Codex or directly through the CLI
 
-## 环境要求
+## Requirements
 
-- Python 3.11+
-- 可选：Obsidian（仅在需要写入 Vault 或使用 Bases 视图时需要）
+- Python 3.11 or later
+- Optional: Obsidian, when writing to a vault or using Bases views
 
-运行时不依赖第三方 Python 包。
+The CLI has no third-party runtime dependencies.
 
-## 安装到 Codex
+## Install for Codex
 
 ```bash
 git clone https://github.com/DengZhiyuan-math/automated-job-application-tracker-skill.git
@@ -43,17 +43,17 @@ ln -s "$(pwd)/skills/organize-job-applications" \
   "$HOME/.codex/skills/organize-job-applications"
 ```
 
-重新打开 Codex task 后，可以直接调用：
+Open a new Codex task, then invoke the skill explicitly:
 
 ```text
-$organize-job-applications 把这份职位描述整理并记录到我的 Obsidian 求职追踪库。
+$organize-job-applications Organize this job description and record it in my Obsidian application tracker.
 ```
 
-如果目标位置已经存在，请先确认其中没有需要保留的 skill，再自行移除旧链接或目录。
+If the destination already exists, inspect it before removing or replacing the existing skill directory or symbolic link.
 
-## 安装 CLI
+## Install the CLI
 
-### 从源码安装
+### Install from source
 
 ```bash
 git clone https://github.com/DengZhiyuan-math/automated-job-application-tracker-skill.git
@@ -64,21 +64,21 @@ source .venv/bin/activate
 python -m pip install -e .
 ```
 
-安装完成后检查命令：
+Verify the installation:
 
 ```bash
 manual-job-profile --help
 ```
 
-也可以不安装，直接从源码运行：
+You can also run the module without installing it:
 
 ```bash
 PYTHONPATH=src python -m hermes.skills.manual_job_profile --help
 ```
 
-## 快速开始
+## Quick start
 
-### 1. 从 JD 文件生成 Markdown
+### Generate Markdown from a saved job description
 
 ```bash
 manual-job-profile \
@@ -89,9 +89,9 @@ manual-job-profile \
   --output ./job-notes/harmattan-ai-deep-learning-intern.md
 ```
 
-### 2. 从剪贴板写入 Obsidian Vault
+### Write clipboard content to an Obsidian vault
 
-macOS：
+On macOS:
 
 ```bash
 pbpaste | manual-job-profile \
@@ -101,23 +101,23 @@ pbpaste | manual-job-profile \
   --vault "$HOME/Obsidian/Main"
 ```
 
-默认写入：
+By default, the note is written under:
 
 ```text
 <vault>/Hermes Job Tracker/Job Applications/
 ```
 
-同时生成或刷新：
+The command also creates or refreshes:
 
 ```text
 <vault>/Hermes Job Tracker/Job Applications/Job Applications.base
 ```
 
-如不希望创建 `.base` 文件，添加 `--no-base`。
+Add `--no-base` to skip the Bases file.
 
-### 3. 输出到终端
+### Print Markdown to stdout
 
-不传 `--vault` 或 `--output` 时，生成的 Markdown 会打印到标准输出：
+When neither `--vault` nor `--output` is supplied, the generated Markdown is printed to standard output:
 
 ```bash
 manual-job-profile \
@@ -126,37 +126,37 @@ manual-job-profile \
   --role "Research Engineer"
 ```
 
-## 输出模式
+## Output modes
 
-| 参数 | 结果 |
+| Option | Result |
 | --- | --- |
-| `--vault <path>` | 写入 Vault 下的目标文件夹，并默认刷新 Bases 文件 |
-| `--output <path>` | 写入指定 Markdown 文件 |
-| 两者都不传 | 将 Markdown 打印到标准输出 |
+| `--vault <path>` | Write under the selected vault folder and refresh the Bases file by default |
+| `--output <path>` | Write one explicit Markdown file |
+| Neither option | Print Markdown to standard output |
 
-当 `--output` 和 `--vault` 同时传入时，笔记写入 `--output` 指定的位置；只要提供了 `--vault` 且未设置 `--no-base`，仍会刷新 Vault 中的 Bases 文件。
+When `--output` and `--vault` are both supplied, the note is written to the explicit `--output` path. The Bases file is still refreshed under the vault unless `--no-base` is supplied.
 
-## 参数
+## CLI options
 
-| 参数 | 说明 | 默认值 |
+| Option | Description | Default |
 | --- | --- | --- |
-| `--input` | JD / profile 文本文件；不传时从标准输入读取 | 标准输入 |
-| `--vault` | Obsidian Vault 根目录 | 无 |
-| `--folder` | Vault 内的目标文件夹 | `Hermes Job Tracker/Job Applications` |
-| `--output` | 直接指定 Markdown 输出文件 | 无 |
-| `--no-base` | 写入 Vault 时不生成 `.base` 文件 | 关闭 |
-| `--company` | 公司名称 | `Unknown Company` |
-| `--role` | 职位名称 | `Unknown Role` |
-| `--status` | 申请状态 | `drafting` |
-| `--track` | 手动指定职位方向；不传时从文本推断 | 自动推断 |
-| `--source` | 来源，例如 `manual`、`email`、`linkedin` | `manual` |
-| `--location` | 工作地点 | `unknown` |
-| `--deadline` | 申请或测评截止日期 | `unknown` |
-| `--contact` | 招聘方或联系人 | `unknown` |
-| `--application-date` | 申请日期 | 当天日期 |
-| `--notes` | 写入 Hermes Notes 的初始备注 | 空 |
+| `--input` | Job description or profile text file; omit to read stdin | Standard input |
+| `--vault` | Obsidian vault root | None |
+| `--folder` | Target folder inside the vault | `Hermes Job Tracker/Job Applications` |
+| `--output` | Explicit Markdown output path | None |
+| `--no-base` | Skip the Bases file when writing to a vault | Disabled |
+| `--company` | Company name | `Unknown Company` |
+| `--role` | Role title | `Unknown Role` |
+| `--status` | Application status | `drafting` |
+| `--track` | Explicit role track; omit to infer it from the text | Inferred |
+| `--source` | Source such as `manual`, `email`, or `linkedin` | `manual` |
+| `--location` | Role location | `unknown` |
+| `--deadline` | Application or assessment deadline | `unknown` |
+| `--contact` | Recruiter or contact | `unknown` |
+| `--application-date` | Application date | Current date |
+| `--notes` | Initial content for Hermes Notes | Empty |
 
-## 支持的申请状态
+## Supported statuses
 
 ```text
 drafting
@@ -173,9 +173,9 @@ withdrawn
 no_response
 ```
 
-状态中的空格会被转换为下划线；不在上述列表中的值会导致命令报错。
+Spaces in a status are normalized to underscores. Unsupported values cause the command to fail.
 
-以下状态会被标记为 `needs_action: true`：
+The following statuses set `needs_action: true`:
 
 ```text
 drafting
@@ -185,83 +185,83 @@ interview_scheduled
 assessment_pending
 ```
 
-## 生成内容
+## Generated records
 
-每条申请记录包含：
+Each application note contains:
 
-- Obsidian YAML Properties；
-- 公司、职位、状态、track、日期、来源、地点和联系人；
-- `needs_action` 标记；
-- `Snapshot`、`Next Action`、`Fit Notes`、`Hermes Notes` 等区块；
-- 完整的原始 JD / profile 文本。
+- Obsidian YAML Properties
+- Company, role, status, track, date, source, location, and contact fields
+- A `needs_action` flag
+- `Snapshot`, `Next Action`, `Fit Notes`, and `Hermes Notes` sections
+- The complete original job description or profile text
 
-默认文件名格式：
+The default filename format is:
 
 ```text
 YYYY-MM-DD-<company>-<role>.md
 ```
 
-`Job Applications.base` 提供 `Active`、`Needs Action` 和 `All Applications` 三个表格视图。
+`Job Applications.base` defines `Active`, `Needs Action`, and `All Applications` table views.
 
-## Codex Skill
+## Codex skill
 
-Skill 入口位于：
+The skill entry point is:
 
 ```text
 skills/organize-job-applications/SKILL.md
 ```
 
-扩展说明位于：
+The detailed CLI reference is:
 
 ```text
 skills/organize-job-applications/references/manual_job_profile.md
 ```
 
-将 `skills/organize-job-applications` 保持原结构放入或链接到 `~/.codex/skills/`。skill 会优先调用已安装的 `manual-job-profile` 命令；因此还需要按上面的方式安装 CLI。
+Keep `skills/organize-job-applications` intact and copy or link it under `~/.codex/skills/`. The skill calls the installed `manual-job-profile` command, so install the CLI as described above.
 
-生成的 Markdown 仍保留 `Hermes Notes` 和 `hermes/job-tracker` 等兼容字段，避免破坏已有 Obsidian 数据。
+Generated Markdown retains compatibility fields such as `Hermes Notes` and `hermes/job-tracker` to avoid breaking existing Obsidian data.
 
-## 项目结构
+## Project structure
 
 ```text
 .
-├── skills/organize-job-applications/
-│   ├── SKILL.md
-│   ├── agents/openai.yaml
-│   └── references/manual_job_profile.md
-├── src/hermes/skills/manual_job_profile.py
-├── tests/test_manual_job_profile.py
-├── pyproject.toml
-└── README.md
+|-- skills/organize-job-applications/
+|   |-- SKILL.md
+|   |-- agents/openai.yaml
+|   `-- references/manual_job_profile.md
+|-- src/hermes/skills/manual_job_profile.py
+|-- tests/test_manual_job_profile.py
+|-- pyproject.toml
+`-- README.md
 ```
 
-## 开发与测试
+## Development and testing
 
 ```bash
 PYTHONPATH=src python -m unittest discover -s tests -v
 ```
 
-当前测试覆盖：
+The test suite covers:
 
-- track 推断；
-- Markdown 主要区块渲染；
-- 默认文件名清理；
-- CLI 写入笔记和 Obsidian Bases 文件。
+- Track inference
+- Major Markdown sections
+- Default filename sanitization
+- CLI writes for both the application note and Obsidian Bases file
 
-修改实现后，建议同时运行测试并检查：
+After changing the implementation, also inspect the CLI help:
 
 ```bash
 PYTHONPATH=src python -m hermes.skills.manual_job_profile --help
 ```
 
-## 数据与隐私
+## Data and privacy
 
-工具在本地读取和写入文本，不会主动上传 JD、联系人或申请记录。请不要把真实 Vault、邮箱导出、访问令牌或包含个人信息的生成文件提交到公开仓库。
+The tool reads and writes local text only. It does not upload job descriptions, contacts, or application records. Do not commit real vault contents, inbox exports, access tokens, or generated records containing personal data to the public repository.
 
-## 维护约定
+## Maintenance
 
-核心实现位于 `src/hermes/skills/manual_job_profile.py`。如果 README、skill 参考文档与代码行为不一致，以代码和测试为准，并同步更新文档。
+The core implementation lives in `src/hermes/skills/manual_job_profile.py`. If the README, skill reference, and implementation disagree, treat the implementation and tests as authoritative, then update the documentation.
 
 ## License
 
-项目包元数据声明为 MIT License。
+The package metadata declares the project under the MIT License.
